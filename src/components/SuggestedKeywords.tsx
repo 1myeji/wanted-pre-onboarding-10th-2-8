@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import SearchIcon from './SearchIcon';
 import SuggestedKeywordsList from './SuggestedKeywordsList';
@@ -13,26 +13,27 @@ const SuggestedKeywords = ({
   searchKeywords,
   changeKeyword,
 }: ISuggestedKeywordsProps) => {
-  const [searchData, setSearchData] = useState([]);
-  const { selectedIndex, setSelectedIndex } = useKeyboardNavigation(searchData?.length || 0);
+  const [searchData, setSearchData] = useState<ISearchData[]>([]);
+  const { selectedIndex, setSelectedIndex } = useKeyboardNavigation(searchData.length);
+
+  const fetchSearchData = useCallback(async (searchKeywords: string) => {
+    if (searchKeywords) {
+      const cachedData = checkCacheExpired(searchKeywords);
+      if (cachedData) {
+        return setSearchData(cachedData);
+      } else {
+        const result = await searchApi(searchKeywords);
+        setSearchData(result);
+        setItemWithExpireTime(searchKeywords, result);
+      }
+    } else {
+      setSearchData([]);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchSearchData = async () => {
-      if (searchKeywords) {
-        const cachedData = checkCacheExpired(searchKeywords);
-        if (cachedData) {
-          return setSearchData(cachedData);
-        } else {
-          const result = await searchApi(searchKeywords);
-          setSearchData(result);
-          setItemWithExpireTime(searchKeywords, result);
-        }
-      } else {
-        setSearchData([]);
-      }
-    };
-    fetchSearchData();
-  }, [searchKeywords]);
+    fetchSearchData(searchKeywords);
+  }, [searchKeywords, fetchSearchData]);
 
   return (
     <KeywordsContainer isFocused={isFocused}>

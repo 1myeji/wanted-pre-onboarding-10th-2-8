@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { IsFocusedProps } from '../types/global';
 import SearchIcon from '../components/SearchIcon';
@@ -11,10 +11,10 @@ const Search = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const debouncedSearchKeywords = useDebounce(searchKeywords);
 
-  const handleInputFocus = () => {
+  const handleInputFocus = useCallback(() => {
     setIsFocused(true);
     if (inputRef.current) inputRef.current.focus();
-  };
+  }, []);
 
   const handleChangeSearchKeywords = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchKeywords(event.target.value);
@@ -27,7 +27,7 @@ const Search = () => {
         온라인으로 참여하기
       </SearchHeader>
       <SearchInputWrapper isFocused={isFocused}>
-        <InputSection onClick={handleInputFocus}>
+        <InputSection onClick={handleInputFocus} className="안녕">
           <SearchIconWrapper isFocused={isFocused} searchKeywords={searchKeywords}>
             <SearchIcon />
           </SearchIconWrapper>
