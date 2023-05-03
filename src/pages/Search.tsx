@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { IsFocusedProps } from '../types/global';
 import SearchIcon from '../components/SearchIcon';
+import SuggestedKeywords from '../components/SuggestedKeywords';
 
 const Search = () => {
   const [isFocused, setIsFocused] = useState(false);
@@ -18,7 +19,7 @@ const Search = () => {
         국내 모든 임상시험 검색하고 <br />
         온라인으로 참여하기
       </SearchHeader>
-      <SearchInputWrapper>
+      <SearchInputWrapper isFocused={isFocused}>
         <InputSection onClick={handleInputFocus}>
           <SearchIconWrapper isFocused={isFocused}>
             <SearchIcon />
@@ -35,6 +36,7 @@ const Search = () => {
           <SearchIcon />
         </SearchBtn>
       </SearchInputWrapper>
+      <SuggestedKeywords />
     </MainContainer>
   );
 };
@@ -59,10 +61,10 @@ const SearchHeader = styled.h2`
   margin-bottom: 40px;
 `;
 
-const SearchInputWrapper = styled.div`
+const SearchInputWrapper = styled.div<IsFocusedProps>`
   width: 470px;
   border-radius: 42px;
-  border: 2px solid #fff;
+  border: 2px solid;
   font-size: 1rem;
   font-weight: 400;
   color: #a7afb7;
@@ -71,6 +73,7 @@ const SearchInputWrapper = styled.div`
   align-items: center;
   padding: 20px 10px 20px 24px;
   justify-content: space-between;
+  border-color: ${({ isFocused }) => (isFocused ? '#007be9' : '#fff')};
 `;
 
 const InputSection = styled.div`
