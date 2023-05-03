@@ -3,21 +3,23 @@ import styled from 'styled-components';
 import SearchIcon from './SearchIcon';
 import SuggestedKeywordsList from './SuggestedKeywordsList';
 import { searchApi } from '../api/api';
-import { ISearchData } from '../types/global';
+import { ISearchData, ISuggestedKeywordsProps, IsFocusedProps } from '../types/global';
 
-const SuggestedKeywords = () => {
+const SuggestedKeywords = ({ isFocused, searchKeywords }: ISuggestedKeywordsProps) => {
   const [searchData, setSearchData] = useState([]);
 
   useEffect(() => {
     const fetchSearchData = async () => {
-      const result = await searchApi('갑상선');
-      setSearchData(result);
+      if (searchKeywords) {
+        const result = await searchApi(searchKeywords);
+        setSearchData(result);
+      }
     };
     fetchSearchData();
-  }, []);
+  }, [searchKeywords]);
 
   return (
-    <KeywordsContainer>
+    <KeywordsContainer isFocused={isFocused}>
       <SearchKeyWordsContainer>
         <SearchIcon />
         <p>갑상선</p>
@@ -25,7 +27,7 @@ const SuggestedKeywords = () => {
       <SuggestedKeywordsContainer>
         <SuggestedKeywordsTitle>추천 검색어</SuggestedKeywordsTitle>
         {searchData?.map((keyword: ISearchData) => (
-          <SuggestedKeywordsList key={keyword.id} keyword={keyword.name} />
+          <SuggestedKeywordsList key={keyword?.id} keyword={keyword?.name} />
         ))}
       </SuggestedKeywordsContainer>
     </KeywordsContainer>
@@ -34,7 +36,8 @@ const SuggestedKeywords = () => {
 
 export default SuggestedKeywords;
 
-const KeywordsContainer = styled.div`
+const KeywordsContainer = styled.div<IsFocusedProps>`
+  display: ${({ isFocused }) => (isFocused ? 'block' : 'none')};
   margin-top: 8px;
   border-radius: 20px;
   background-color: rgb(255, 255, 255);

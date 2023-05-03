@@ -1,16 +1,23 @@
-import { useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { IsFocusedProps } from '../types/global';
 import SearchIcon from '../components/SearchIcon';
 import SuggestedKeywords from '../components/SuggestedKeywords';
+import useDebounce from '../hooks/useDebounce';
 
 const Search = () => {
   const [isFocused, setIsFocused] = useState(false);
+  const [searchKeywords, setSearchKeywords] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const debouncedSearchKeywords = useDebounce(searchKeywords);
 
   const handleInputFocus = () => {
     setIsFocused(true);
     if (inputRef.current) inputRef.current.focus();
+  };
+
+  const handleChangeSearchKeywords = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchKeywords(event.target.value);
   };
 
   return (
@@ -21,22 +28,25 @@ const Search = () => {
       </SearchHeader>
       <SearchInputWrapper isFocused={isFocused}>
         <InputSection onClick={handleInputFocus}>
-          <SearchIconWrapper isFocused={isFocused}>
+          <SearchIconWrapper isFocused={isFocused} searchKeywords={searchKeywords}>
             <SearchIcon />
           </SearchIconWrapper>
-          <PlaceholderText isFocused={isFocused}>질환명을 입력해 주세요.</PlaceholderText>
+          <PlaceholderText isFocused={isFocused} searchKeywords={searchKeywords}>
+            질환명을 입력해 주세요.
+          </PlaceholderText>
           <SearchInput
             type="text"
             ref={inputRef}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
+            onChange={handleChangeSearchKeywords}
           />
         </InputSection>
         <SearchBtn>
           <SearchIcon />
         </SearchBtn>
       </SearchInputWrapper>
-      <SuggestedKeywords />
+      <SuggestedKeywords isFocused={isFocused} searchKeywords={debouncedSearchKeywords} />
     </MainContainer>
   );
 };
@@ -49,7 +59,7 @@ const MainContainer = styled.main`
   min-height: calc(100vh - 120px);
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding: 80px 0 160px;
   flex-direction: column;
 `;
 
@@ -84,7 +94,7 @@ const InputSection = styled.div`
 
 const SearchIconWrapper = styled.div<IsFocusedProps>`
   position: absolute;
-  display: ${({ isFocused }) => (isFocused ? 'none' : 'block')};
+  display: ${({ isFocused, searchKeywords }) => (isFocused || searchKeywords ? 'none' : 'block')};
   svg {
     width: 16px;
     height: 16px;
@@ -96,7 +106,7 @@ const SearchIconWrapper = styled.div<IsFocusedProps>`
 const PlaceholderText = styled.div<IsFocusedProps>`
   position: absolute;
   left: 28px;
-  display: ${({ isFocused }) => (isFocused ? 'none' : 'block')};
+  display: ${({ isFocused, searchKeywords }) => (isFocused || searchKeywords ? 'none' : 'block')};
 `;
 
 const SearchInput = styled.input`
