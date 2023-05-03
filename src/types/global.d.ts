@@ -11,4 +11,5 @@ export interface ISearchData {
 export interface ISuggestedKeywordsProps {
   isFocused: boolean;
   searchKeywords: string;
+  changeKeyword: string;
 }

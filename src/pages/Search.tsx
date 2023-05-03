@@ -46,7 +46,11 @@ const Search = () => {
           <SearchIcon />
         </SearchBtn>
       </SearchInputWrapper>
-      <SuggestedKeywords isFocused={isFocused} searchKeywords={debouncedSearchKeywords} />
+      <SuggestedKeywords
+        isFocused={isFocused}
+        searchKeywords={debouncedSearchKeywords}
+        changeKeyword={searchKeywords}
+      />
     </MainContainer>
   );
 };

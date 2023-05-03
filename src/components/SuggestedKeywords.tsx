@@ -4,15 +4,29 @@ import SearchIcon from './SearchIcon';
 import SuggestedKeywordsList from './SuggestedKeywordsList';
 import { searchApi } from '../api/api';
 import { ISearchData, ISuggestedKeywordsProps, IsFocusedProps } from '../types/global';
+import { setItemWithExpireTime } from '../utils/setItem';
+import { checkCacheExpired } from '../utils/checkCacheExpired';
 
-const SuggestedKeywords = ({ isFocused, searchKeywords }: ISuggestedKeywordsProps) => {
+const SuggestedKeywords = ({
+  isFocused,
+  searchKeywords,
+  changeKeyword,
+}: ISuggestedKeywordsProps) => {
   const [searchData, setSearchData] = useState([]);
 
   useEffect(() => {
     const fetchSearchData = async () => {
       if (searchKeywords) {
-        const result = await searchApi(searchKeywords);
-        setSearchData(result);
+        const cachedData = checkCacheExpired(searchKeywords);
+        if (cachedData) {
+          return setSearchData(cachedData);
+        } else {
+          const result = await searchApi(searchKeywords);
+          setSearchData(result);
+          setItemWithExpireTime(searchKeywords, result);
+        }
+      } else {
+        setSearchData([]);
       }
     };
     fetchSearchData();
@@ -22,10 +36,10 @@ const SuggestedKeywords = ({ isFocused, searchKeywords }: ISuggestedKeywordsProp
     <KeywordsContainer isFocused={isFocused}>
       <SearchKeyWordsContainer>
         <SearchIcon />
-        <p>갑상선</p>
+        <p>{changeKeyword}</p>
       </SearchKeyWordsContainer>
       <SuggestedKeywordsContainer>
-        <SuggestedKeywordsTitle>추천 검색어</SuggestedKeywordsTitle>
+        {searchData?.length > 0 && <SuggestedKeywordsTitle>추천 검색어</SuggestedKeywordsTitle>}
         {searchData?.map((keyword: ISearchData) => (
           <SuggestedKeywordsList key={keyword?.id} keyword={keyword?.name} />
         ))}

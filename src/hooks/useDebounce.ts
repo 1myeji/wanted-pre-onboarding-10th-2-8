@@ -6,7 +6,7 @@ const useDebounce = (searchKeywords: string) => {
   useEffect(() => {
     const debounce = setTimeout(() => {
       setDebounceData(searchKeywords);
-    }, 300);
+    }, 500);
 
     return () => {
       clearTimeout(debounce);
