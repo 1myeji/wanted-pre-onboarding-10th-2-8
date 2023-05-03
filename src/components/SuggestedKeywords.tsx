@@ -6,6 +6,7 @@ import { searchApi } from '../api/api';
 import { ISearchData, ISuggestedKeywordsProps, IsFocusedProps } from '../types/global';
 import { setItemWithExpireTime } from '../utils/setItem';
 import { checkCacheExpired } from '../utils/checkCacheExpired';
+import useKeyboardNavigation from '../hooks/useKeyboardNavigation ';
 
 const SuggestedKeywords = ({
   isFocused,
@@ -13,6 +14,7 @@ const SuggestedKeywords = ({
   changeKeyword,
 }: ISuggestedKeywordsProps) => {
   const [searchData, setSearchData] = useState([]);
+  const { selectedIndex, setSelectedIndex } = useKeyboardNavigation(searchData?.length || 0);
 
   useEffect(() => {
     const fetchSearchData = async () => {
@@ -39,10 +41,16 @@ const SuggestedKeywords = ({
         <p>{changeKeyword}</p>
       </SearchKeyWordsContainer>
       <SuggestedKeywordsContainer>
-        {searchData?.length > 0 && <SuggestedKeywordsTitle>추천 검색어</SuggestedKeywordsTitle>}
-        {searchData?.map((keyword: ISearchData) => (
-          <SuggestedKeywordsList key={keyword?.id} keyword={keyword?.name} />
+        <SuggestedKeywordsTitle>추천 검색어</SuggestedKeywordsTitle>
+        {searchData?.map((keyword: ISearchData, index: number) => (
+          <SuggestedKeywordsList
+            key={keyword?.id}
+            keyword={keyword?.name}
+            isSelected={index === selectedIndex}
+            handleMouseEnter={() => setSelectedIndex(index)}
+          />
         ))}
+        {searchData?.length === 0 && <NoSearchResults>검색어 없음</NoSearchResults>}
       </SuggestedKeywordsContainer>
     </KeywordsContainer>
   );
@@ -69,11 +77,13 @@ const KeywordsContainer = styled.div<IsFocusedProps>`
 `;
 
 const SearchKeyWordsContainer = styled.div`
-  padding: 8px 24px;
   display: flex;
+  padding-left: 24px;
+  padding-bottom: 10px;
 `;
 
-const SuggestedKeywordsContainer = styled(SearchKeyWordsContainer)`
+const SuggestedKeywordsContainer = styled.div`
+  display: flex;
   flex-direction: column;
 `;
 
@@ -81,4 +91,11 @@ const SuggestedKeywordsTitle = styled.p`
   color: rgb(106, 115, 123);
   font-size: 13px;
   font-weight: 400;
+  padding-left: 24px;
+  padding-bottom: 5px;
+`;
+
+const NoSearchResults = styled.p`
+  margin-top: 8px;
+  padding-left: 24px;
 `;

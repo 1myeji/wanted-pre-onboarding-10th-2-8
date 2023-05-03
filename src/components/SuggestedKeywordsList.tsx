@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 import SearchIcon from './SearchIcon';
+import { ISuggestedKeywordsListProps, IsSelectedProps } from '../types/global';
 
-const SuggestedKeywordsList = ({ keyword }: { keyword: string }) => {
+const SuggestedKeywordsList = ({
+  keyword,
+  isSelected,
+  handleMouseEnter,
+}: ISuggestedKeywordsListProps) => {
   return (
-    <SuggestedKeywordsWrapper>
+    <SuggestedKeywordsWrapper isSelected={isSelected} onMouseEnter={handleMouseEnter}>
       <SearchIcon />
       <p>{keyword}</p>
     </SuggestedKeywordsWrapper>
@@ -12,7 +17,8 @@ const SuggestedKeywordsList = ({ keyword }: { keyword: string }) => {
 
 export default SuggestedKeywordsList;
 
-const SuggestedKeywordsWrapper = styled.div`
+const SuggestedKeywordsWrapper = styled.div<IsSelectedProps>`
   display: flex;
-  margin: 8px 0;
+  padding: 8px 24px;
+  background-color: ${({ isSelected }) => (isSelected ? '#f1f3f5' : 'transparent')};
 `;

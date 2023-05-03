@@ -13,3 +13,13 @@ export interface ISuggestedKeywordsProps {
   searchKeywords: string;
   changeKeyword: string;
 }
+
+export interface ISuggestedKeywordsListProps {
+  keyword: string;
+  isSelected: boolean;
+  handleMouseEnter: () => void;
+}
+
+export interface IsSelectedProps {
+  isSelected: boolean;
+}
