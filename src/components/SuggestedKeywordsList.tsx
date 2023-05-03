@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import SearchIcon from './SearchIcon';
 
-const SuggestedKeywordsList = () => {
+const SuggestedKeywordsList = ({ keyword }: { keyword: string }) => {
   return (
     <SuggestedKeywordsWrapper>
       <SearchIcon />
-      <p>갑상선</p>
+      <p>{keyword}</p>
     </SuggestedKeywordsWrapper>
   );
 };

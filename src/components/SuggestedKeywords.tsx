@@ -1,8 +1,21 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import SearchIcon from './SearchIcon';
 import SuggestedKeywordsList from './SuggestedKeywordsList';
+import { searchApi } from '../api/api';
+import { ISearchData } from '../types/global';
 
 const SuggestedKeywords = () => {
+  const [searchData, setSearchData] = useState([]);
+
+  useEffect(() => {
+    const fetchSearchData = async () => {
+      const result = await searchApi('갑상선');
+      setSearchData(result);
+    };
+    fetchSearchData();
+  }, []);
+
   return (
     <KeywordsContainer>
       <SearchKeyWordsContainer>
@@ -11,8 +24,8 @@ const SuggestedKeywords = () => {
       </SearchKeyWordsContainer>
       <SuggestedKeywordsContainer>
         <SuggestedKeywordsTitle>추천 검색어</SuggestedKeywordsTitle>
-        {[1, 2, 3, 4, 5, 6].map((data: number) => (
-          <SuggestedKeywordsList />
+        {searchData?.map((keyword: ISearchData) => (
+          <SuggestedKeywordsList key={keyword.id} keyword={keyword.name} />
         ))}
       </SuggestedKeywordsContainer>
     </KeywordsContainer>
