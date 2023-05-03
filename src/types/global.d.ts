@@ -18,6 +18,7 @@ export interface ISuggestedKeywordsListProps {
   keyword: string;
   isSelected: boolean;
   handleMouseEnter: () => void;
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface IsSelectedProps {

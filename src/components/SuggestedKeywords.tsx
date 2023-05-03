@@ -48,6 +48,7 @@ const SuggestedKeywords = ({
             keyword={keyword?.name}
             isSelected={index === selectedIndex}
             handleMouseEnter={() => setSelectedIndex(index)}
+            setSelectedIndex={setSelectedIndex}
           />
         ))}
         {searchData?.length === 0 && <NoSearchResults>검색어 없음</NoSearchResults>}

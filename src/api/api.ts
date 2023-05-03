@@ -3,7 +3,6 @@ import axios from 'axios';
 export const searchApi = async (keyword: string) => {
   try {
     const res = await axios.get(`/api/api/v1/search-conditions/?name=${keyword}`);
-    console.log(res);
     console.info('calling api');
     return res.data;
   } catch (e) {

@@ -6,9 +6,14 @@ const SuggestedKeywordsList = ({
   keyword,
   isSelected,
   handleMouseEnter,
+  setSelectedIndex,
 }: ISuggestedKeywordsListProps) => {
   return (
-    <SuggestedKeywordsWrapper isSelected={isSelected} onMouseEnter={handleMouseEnter}>
+    <SuggestedKeywordsWrapper
+      isSelected={isSelected}
+      onMouseOver={handleMouseEnter}
+      onMouseOut={() => setSelectedIndex(-1)}
+    >
       <SearchIcon />
       <p>{keyword}</p>
     </SuggestedKeywordsWrapper>
@@ -21,4 +26,5 @@ const SuggestedKeywordsWrapper = styled.div<IsSelectedProps>`
   display: flex;
   padding: 8px 24px;
   background-color: ${({ isSelected }) => (isSelected ? '#f1f3f5' : 'transparent')};
+  cursor: pointer;
 `;
